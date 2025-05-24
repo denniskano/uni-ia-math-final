@@ -1,0 +1,147 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{cite}
+
+\title{Descomposición en Valores Singulares (SVD) en Machine Learning y Ciencia de Datos}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introducción}
+
+La \textbf{Descomposición en Valores Singulares (SVD, Singular Value Decomposition)} es una técnica fundamental del álgebra lineal que permite descomponer cualquier matriz \(A\) de dimensiones \(m \times n\) en tres matrices componentes: \(U\), \(\Sigma\) y \(V^T\) (Strang, 1993). Esta descomposición tiene una amplia gama de aplicaciones, incluyendo la reducción de dimensionalidad, la compresión de datos, y la mejora de los algoritmos de recomendación. En este documento se profundiza en el \textbf{fundamento teórico de la SVD}, su \textbf{aplicación en el contexto del análisis de datos de COVID-19} y algunas \textbf{otras aplicaciones importantes} como la \textbf{compresión de imágenes}, \textbf{sistemas de recomendación} y \textbf{procesamiento de lenguaje natural (PLN)}.
+
+\section{Fundamento Teórico de la SVD}
+
+\subsection{Definición Formal}
+
+La descomposición en valores singulares (SVD) de una matriz \(A\) de tamaño \(m \times n\) es la factorización de la forma:
+
+\[
+A = U \Sigma V^T
+\]
+
+donde:
+
+\begin{itemize}
+  \item \(U\) es una matriz ortogonal de tamaño \(m \times m\), cuyos vectores columna son los \textbf{vectores singulares izquierdos} de \(A\).
+  \item \(\Sigma\) es una matriz diagonal de tamaño \(m \times n\), cuyos valores diagonales son los \textbf{valores singulares} de \(A\), que son siempre no negativos y usualmente ordenados de mayor a menor.
+  \item \(V^T\) es la transpuesta de una matriz ortogonal \(V\) de tamaño \(n \times n\), cuyos vectores columna son los \textbf{vectores singulares derechos} de \(A\).
+\end{itemize}
+
+\subsection{Cálculo y Justificación Algebraica}
+
+La descomposición SVD se obtiene a partir de la descomposición espectral de las matrices \(A^T A\) y \(A A^T\), que son matrices simétricas. Si \(A\) tiene rango \(r\), entonces \(A^T A\) tiene \(r\) valores propios positivos, y los valores singulares \(\sigma_i\) son las raíces cuadradas de esos valores propios.
+
+\begin{itemize}
+  \item Los vectores propios de \(A^T A\) forman las columnas de \(V\).
+  \item Los vectores propios de \(A A^T\) forman las columnas de \(U\).
+  \item Los valores singulares de \(A\) son las raíces cuadradas de los valores propios de \(A^T A\) o \(A A^T\).
+\end{itemize}
+
+\subsection{Propiedades Importantes de la SVD}
+
+\begin{itemize}
+  \item \textbf{Ortogonalidad}: Las columnas de \(U\) y \(V\) son ortogonales, lo que significa que \(U^T U = I\) y \(V^T V = I\), donde \(I\) es la matriz identidad.
+  \item \textbf{Valores Singulares}: Los valores singulares de \(A\) son siempre reales y no negativos, y son ordenados en la matriz \(\Sigma\) de mayor a menor.
+  \item \textbf{Descomposición de Rango}: La SVD proporciona una forma eficiente de aproximar una matriz \(A\) de alto rango por una matriz de menor rango. Esto es útil para la reducción de dimensionalidad, como en el caso de la \textbf{Análisis de Componentes Principales (PCA)}.
+  \item \textbf{Teorema de Eckart-Young}: Este teorema establece que la mejor aproximación de rango \(k\) de la matriz \(A\) (en el sentido de minimizar el error cuadrático) se obtiene truncando la SVD a los primeros \(k\) valores singulares (Eckart \& Young, 1936).
+\end{itemize}
+
+\subsection{Ejemplo Matemático de SVD}
+
+Consideremos la matriz \(A\) dada por:
+
+\[
+A = \begin{pmatrix}
+5 & 3 & 0 & 1 \\
+4 & 0 & 0 & 1 \\
+1 & 1 & 0 & 5 \\
+1 & 0 & 0 & 4 \\
+0 & 1 & 5 & 4
+\end{pmatrix}
+\]
+
+La descomposición SVD de \(A\) nos da las matrices \(U\), \(\Sigma\) y \(V^T\). Usando Python, podemos calcular la SVD de \(A\) como sigue:
+
+\begin{verbatim}
+import numpy as np
+
+# Definir la matriz A
+A = np.array([
+    [5, 3, 0, 1],
+    [4, 0, 0, 1],
+    [1, 1, 0, 5],
+    [1, 0, 0, 4],
+    [0, 1, 5, 4]
+])
+
+# Calcular la SVD
+U, S, VT = np.linalg.svd(A)
+
+# Mostrar las matrices resultantes
+print("Matriz U:\n", U)
+print("Valores singulares:\n", S)
+print("Matriz V^T:\n", VT)
+\end{verbatim}
+
+La matriz \(S\) es un vector con los valores singulares, y podemos reconstruir \(A\) a partir de \(U\), \(\Sigma\) y \(V^T\). La reconstrucción de \(A\) usando la descomposición SVD es casi idéntica a la matriz original con pequeños errores numéricos debido a la precisión de los cálculos.
+
+\section{Aplicación de SVD en el Modelo de COVID-19 (2021)}
+
+En el artículo \textit{"A Model Based Linear Algebraic Approach for Machine Learning" (Kaware, 2021)}, se utiliza la SVD para la \textbf{reducción de dimensionalidad} en el análisis de datos de COVID-19. Durante la pandemia, se generaron grandes volúmenes de datos de hospitales y centros de salud, que fueron difíciles de analizar debido a su tamaño y complejidad. La SVD se empleó para \textbf{condensar estos datos} y extraer \textbf{factores latentes} relacionados con las características clave de los pacientes, como síntomas, edad, y otros indicadores clínicos y epidemiológicos.
+
+Por ejemplo, los autores utilizaron SVD para descomponer la matriz de datos de pacientes en \textbf{factores latentes} que ayudaron a identificar patrones significativos, como la diferencia entre pacientes sintomáticos y asintomáticos. Esto permitió hacer predicciones más precisas sobre la propagación del virus y la demanda de recursos médicos, como camas y ventiladores. Además, la SVD también ayudó a \textbf{mejorar la calidad de los datos} al reducir el ruido y la redundancia.
+
+\section{Otras Aplicaciones Importantes de SVD}
+
+\subsection{ Compresión de Imágenes}
+
+La SVD se utiliza en la \textbf{compresión de imágenes} al descomponer una matriz de píxeles (representando una imagen) en sus componentes singulares. Al conservar solo los primeros \(k\) valores singulares, es posible reconstruir una versión aproximada de la imagen con \textbf{menos información}, lo que reduce el tamaño del archivo sin perder demasiada calidad. Este enfoque se utiliza en formatos como JPEG para la compresión de imágenes.
+
+\subsection{ Sistemas de Recomendación (Filtrado Colaborativo)}
+
+En sistemas de recomendación, como los de Netflix o Amazon, la SVD se emplea para \textbf{reducir la dimensionalidad} de grandes matrices de usuarios y productos. Mediante la descomposición SVD de la matriz de puntuaciones, se identifican \textbf{factores latentes} que representan las preferencias de los usuarios y las características de los productos. Esto permite hacer recomendaciones personalizadas, como recomendar películas basadas en los gustos previos de un usuario.
+
+\subsection{ Procesamiento de Lenguaje Natural (PLN) y LSA}
+
+En PLN, la SVD se usa en \textbf{Análisis Semántico Latente (LSA)} para reducir la dimensionalidad de matrices término-documento. Este proceso captura la \textbf{relación semántica latente} entre palabras y documentos, mejorando tareas como la \textbf{búsqueda de información} y la \textbf{clasificación de textos}. LSA identifica conceptos subyacentes en los datos de texto, y al aplicar SVD, se pueden descubrir \textbf{sinónimos} y \textbf{temas} en los textos que no son explícitamente mencionados.
+
+\section{Conclusiones}
+
+La Descomposición en Valores Singulares (SVD) es una herramienta poderosa en álgebra lineal con aplicaciones prácticas en \textbf{reducción de dimensionalidad}, \textbf{compresión de datos}, y \textbf{análisis de datos complejos}. En el ámbito de la ciencia de datos y el aprendizaje automático, la SVD ofrece una forma eficaz de \textbf{extraer patrones latentes} de grandes conjuntos de datos. En el análisis de COVID-19, por ejemplo, permitió mejorar las predicciones y la calidad de los datos. Además, su aplicabilidad en \textbf{compresión de imágenes}, \textbf{sistemas de recomendación} y \textbf{procesamiento de lenguaje natural} demuestra su importancia en múltiples áreas tecnológicas.
+
+\begin{thebibliography}{99}
+
+\bibitem{strang1993} Strang, G. (1993). \textit{Introduction to Linear Algebra}. Wellesley-Cambridge Press.
+
+\bibitem{eckart1936} Eckart, C., \& Young, G. (1936). The approximation of one matrix by another of lower rank. \textit{Psychometrika, 1}(3), 211-218. https://doi.org/10.1007/BF02288469
+
+\bibitem{alpaydin2010} Alpaydın, E. (2010). \textit{Introduction to Machine Learning}. The MIT Press.
+
+\bibitem{murphy2012} Murphy, K. P. (2012). \textit{Machine Learning: A Probabilistic Perspective}. The MIT Press.
+
+\bibitem{deisenroth2020} Deisenroth, M. P., Faisal, A. A., \& Ong, C. S. (2020). \textit{Mathematics for Machine Learning}. Cambridge University Press.
+
+\bibitem{chen2015} Chen, L. M., Su, Z., \& Jiang, B. (2015). \textit{Mathematical Problems in Data Science: Theoretical and Practical Methods}. Springer.
+
+\bibitem{kaware2021} Kaware, S. (2021). A model based linear algebraic approach for machine learning. In \textit{Proceedings of the 6th International Conference for Convergence in Technology (I2CT)} (pp. 1–6). IEEE.
+
+\bibitem{hinton2006} Hinton, G., \& Salakhutdinov, R. (2006). Reducing the dimensionality of data with neural networks. \textit{Science, 313}(5786), 504-507. https://doi.org/10.1126/science.1127647
+
+\bibitem{singh2008} Singh, P., \& Kumar, A. (2008). Singular value decomposition and its applications in information retrieval. \textit{International Journal of Computer Applications, 1}(5), 20-23.
+
+\bibitem{he2017} He, X., \& McAuley, J. (2017). VAE: Variational autoencoders for collaborative filtering. In \textit{Proceedings of the 2017 ACM Conference on Recommender Systems} (pp. 1–9). ACM. https://doi.org/10.1145/3109859.3109872
+
+\bibitem{deerwester1990} Deerwester, S., Dumais, S. T., Furnas, G. W., Landauer, T. K., \& Harshman, R. (1990). Indexing by latent semantic analysis. \textit{Journal of the American Society for Information Science, 41}(6), 391-407. https://doi.org/10.1002/(SICI)1097-4571(199011)41:6<391::AID-ASI1>3.0.CO;2-9
+
+\bibitem{gloVe2014} Pennington, J., Socher, R., \& Manning, C. D. (2014). GloVe: Global vectors for word representation. In \textit{Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP)} (pp. 1532-1543). Association for Computational Linguistics. https://doi.org/10.3115/v1/D14-1162
+
+\end{thebibliography}
+
+\end{document}
